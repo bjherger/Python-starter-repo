@@ -26,9 +26,9 @@ source activate environment_name
 
 # Run script
 cd bin/
-python file_name.py
+python main.py
 ```
 
 
 ## Contact
-Feel free to contact me at 13herger <at> gmail <dot> com
+Feel free to contact me at 13herger `<at>` gmail `<dot>` com
