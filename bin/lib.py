@@ -3,7 +3,6 @@ import logging
 import os
 import tempfile
 
-import numpy
 import pandas
 import yaml
 
