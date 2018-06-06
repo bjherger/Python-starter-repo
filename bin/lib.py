@@ -79,6 +79,15 @@ def get_temp_dir():
     return TEMP_DIR
 
 
+def get_batch_output_folder():
+    global BATCH_OUTPUT_FOLDER
+    if BATCH_OUTPUT_FOLDER is None:
+        BATCH_OUTPUT_FOLDER = os.path.join(get_conf('output_path'), get_batch_name())
+        os.mkdir(BATCH_OUTPUT_FOLDER)
+        logging.info('Batch output folder: {}'.format(BATCH_OUTPUT_FOLDER))
+    return BATCH_OUTPUT_FOLDER
+
+
 def archive_dataset_schemas(step_name, local_dict, global_dict):
     """
     Archive the schema for all available Pandas DataFrames

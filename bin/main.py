@@ -6,6 +6,7 @@ Code Template
 
 """
 import logging
+import pandas
 
 import lib
 
@@ -18,39 +19,49 @@ def main():
     """
     logging.basicConfig(level=logging.DEBUG)
 
-    extract()
-    transform()
-    model()
-    load()
+    observations = extract()
+    observations = transform(observations)
+    observations, transformation_pipeline, trained_model = model(observations)
+    load(observations, transformation_pipeline, trained_model)
     pass
 
 
 def extract():
     logging.info('Begin extract')
+    observations = pandas.DataFrame()
 
     lib.archive_dataset_schemas('extract', locals(), globals())
     logging.info('End extract')
     pass
 
 
-def transform():
+def transform(observations):
     logging.info('Begin transform')
 
     lib.archive_dataset_schemas('transform', locals(), globals())
     logging.info('End transform')
-    pass
+    return observations
 
 
-def model():
+def model(observations):
     logging.info('Begin model')
+
+    transformation_pipeline = None
+
+    trained_model = None
 
     lib.archive_dataset_schemas('model', locals(), globals())
     logging.info('End model')
-    pass
+    return observations, transformation_pipeline, trained_model
 
 
-def load():
+def load(observations, transformation_pipeline, trained_model):
     logging.info('Begin load')
+
+    # Reference variables
+    lib.get_temp_dir()
+
+    logging.info('Saving observations to file')
 
     lib.archive_dataset_schemas('load', locals(), globals())
     logging.info('End load')

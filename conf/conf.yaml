@@ -1,1 +1,2 @@
 data_schema_dir: ../data/schemas
+output_path: ../data/output
