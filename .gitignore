@@ -8,3 +8,6 @@
 
 # User-specific Idea / Pycharm files
 .idea/
+
+# Output files
+data/output/*

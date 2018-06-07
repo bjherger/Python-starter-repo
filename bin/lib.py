@@ -65,7 +65,10 @@ def get_batch_name():
 
     if BATCH_NAME is None:
         logging.info('Batch name not yet set. Setting batch name.')
-        BATCH_NAME = str(datetime.datetime.utcnow()).replace(' ', '_').replace('/', '_').replace(':', '_')
+        batch_prefix = get_conf('batch_prefix')
+        model_choice = get_conf('model_choice')
+        datetime_str = str(datetime.datetime.utcnow().replace(microsecond=0).isoformat())+'Z'
+        BATCH_NAME = '_'.join([batch_prefix, model_choice, datetime_str])
         logging.info('Batch name: {}'.format(BATCH_NAME))
     return BATCH_NAME
 
@@ -73,7 +76,7 @@ def get_batch_name():
 def get_temp_dir():
     global TEMP_DIR
     if TEMP_DIR is None:
-        TEMP_DIR = tempfile.mkdtemp(prefix='reddit_')
+        TEMP_DIR = tempfile.mkdtemp(prefix='python_starter')
         logging.info('Created temporary directory: {}'.format(TEMP_DIR))
         print('Created temporary directory: {}'.format(TEMP_DIR))
     return TEMP_DIR
@@ -109,7 +112,9 @@ def archive_dataset_schemas(step_name, local_dict, global_dict):
     logging.info('Archiving data set schema(s) for step name: {}'.format(step_name))
 
     # Reference variables
-    data_schema_dir = get_conf('data_schema_dir')
+    data_schema_dir = os.path.join(get_batch_output_folder(), 'schemas')
+    if not os.path.exists(data_schema_dir):
+        os.makedirs(data_schema_dir)
     schema_output_path = os.path.join(data_schema_dir, step_name + '.csv')
     schema_agg = list()
 
