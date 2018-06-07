@@ -10,6 +10,7 @@ import yaml
 CONFS = None
 BATCH_NAME = None
 TEMP_DIR = None
+BATCH_OUTPUT_FOLDER = None
 
 
 def load_confs(confs_path='../conf/conf.yaml'):

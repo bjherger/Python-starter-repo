@@ -5,7 +5,10 @@ coding=utf-8
 Code Template
 
 """
+import cPickle
 import logging
+import os
+
 import pandas
 
 import lib
@@ -32,7 +35,7 @@ def extract():
 
     lib.archive_dataset_schemas('extract', locals(), globals())
     logging.info('End extract')
-    pass
+    return observations
 
 
 def transform(observations):
@@ -45,6 +48,8 @@ def transform(observations):
 
 def model(observations):
     logging.info('Begin model')
+
+    mapper = None
 
     transformation_pipeline = None
 
@@ -61,7 +66,19 @@ def load(observations, transformation_pipeline, trained_model):
     # Reference variables
     lib.get_temp_dir()
 
-    logging.info('Saving observations to file')
+    observations_path = os.path.join(lib.get_temp_dir(), 'observations.csv')
+    logging.info('Saving observations to path: {}'.format(observations_path))
+    observations.to_csv(observations_path, index=False)
+
+    if transformation_pipeline is not None:
+        transformation_pipeline_path = os.path.join(lib.get_temp_dir(), 'transformation_pipeline.pkl')
+        logging.info('Saving transformation_pipeline to path: {}'.format(transformation_pipeline))
+        cPickle.dump(transformation_pipeline, open(transformation_pipeline, 'w+'))
+
+    if trained_model is not None:
+        trained_model_path = os.path.join(lib.get_temp_dir(), 'trained_model.pkl')
+        logging.info('Saving trained_model to path: {}'.format(transformation_pipeline))
+        cPickle.dump(trained_model, open(trained_model_path, 'w+'))
 
     lib.archive_dataset_schemas('load', locals(), globals())
     logging.info('End load')
