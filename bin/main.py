@@ -2,7 +2,7 @@
 """
 coding=utf-8
 
-Code Template
+Code template courtesy https://github.com/bjherger/Python-starter-repo
 
 """
 import cPickle
