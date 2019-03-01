@@ -77,7 +77,7 @@ def get_batch_name():
 def get_temp_dir():
     global TEMP_DIR
     if TEMP_DIR is None:
-        TEMP_DIR = tempfile.mkdtemp(prefix='python_starter')
+        TEMP_DIR = tempfile.mkdtemp(prefix='python_starter_')
         logging.info('Created temporary directory: {}'.format(TEMP_DIR))
         print('Created temporary directory: {}'.format(TEMP_DIR))
     return TEMP_DIR
@@ -124,7 +124,7 @@ def archive_dataset_schemas(step_name, local_dict, global_dict):
     env_variables.update(global_dict)
 
     # Filter down to Pandas DataFrames
-    data_sets = filter(lambda (k, v): type(v) == pandas.DataFrame, env_variables.iteritems())
+    data_sets = filter(lambda x: type(x[1]) == pandas.DataFrame, env_variables.iteritems())
     data_sets = dict(data_sets)
 
     header = pandas.DataFrame(columns=['variable', 'type', 'data_set'])

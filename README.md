@@ -6,7 +6,7 @@ A brief, snappy description of what this project does, and why the audience care
 
 ```python
 # Set up Anaconda virtual environment
-conda env create -f environment.yml --force
+conda env create -f environment.yaml --force
 
 # Activate Anaconda virtual environment
 source activate (environment_name)
