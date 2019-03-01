@@ -124,13 +124,13 @@ def archive_dataset_schemas(step_name, local_dict, global_dict):
     env_variables.update(global_dict)
 
     # Filter down to Pandas DataFrames
-    data_sets = filter(lambda x: type(x[1]) == pandas.DataFrame, env_variables.iteritems())
+    data_sets = filter(lambda x: type(x[1]) == pandas.DataFrame, env_variables.items())
     data_sets = dict(data_sets)
 
     header = pandas.DataFrame(columns=['variable', 'type', 'data_set'])
     schema_agg.append(header)
 
-    for (data_set_name, data_set) in data_sets.iteritems():
+    for (data_set_name, data_set) in data_sets.items():
         # Extract variable names
         logging.info('Working data_set: {}'.format(data_set_name))
 

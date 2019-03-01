@@ -5,7 +5,7 @@ coding=utf-8
 Code template courtesy https://github.com/bjherger/Python-starter-repo
 
 """
-import cPickle
+import pickle
 import logging
 import os
 
@@ -73,12 +73,12 @@ def load(observations, transformation_pipeline, trained_model):
     if transformation_pipeline is not None:
         transformation_pipeline_path = os.path.join(lib.get_temp_dir(), 'transformation_pipeline.pkl')
         logging.info('Saving transformation_pipeline to path: {}'.format(transformation_pipeline))
-        cPickle.dump(transformation_pipeline, open(transformation_pipeline, 'w+'))
+        pickle.dump(transformation_pipeline, open(transformation_pipeline, 'w+'))
 
     if trained_model is not None:
         trained_model_path = os.path.join(lib.get_temp_dir(), 'trained_model.pkl')
         logging.info('Saving trained_model to path: {}'.format(transformation_pipeline))
-        cPickle.dump(trained_model, open(trained_model_path, 'w+'))
+        pickle.dump(trained_model, open(trained_model_path, 'w+'))
 
     lib.archive_dataset_schemas('load', locals(), globals())
     logging.info('End load')
