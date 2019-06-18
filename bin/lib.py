@@ -1,7 +1,9 @@
 import datetime
 import logging
 import os
+import re
 import tempfile
+from pathlib import Path
 
 import pandas
 import yaml
@@ -9,11 +11,10 @@ import yaml
 # Global variables
 CONFS = None
 BATCH_NAME = None
-TEMP_DIR = None
 BATCH_OUTPUT_FOLDER = None
 
 
-def load_confs(confs_path='../conf/conf.yaml'):
+def load_confs(confs_path='conf/conf.yaml'):
     """
     Load configurations from file.
 
@@ -30,18 +31,19 @@ def load_confs(confs_path='../conf/conf.yaml'):
 
     if CONFS is None:
 
-        try:
-            logging.info('Attempting to load conf from path: {}'.format(confs_path))
+        template_path = confs_path + '.template'
 
-            # Attempt to load conf from confPath
+        logging.info('Attempting to load conf from confs_path: {} or template_path: {}'.format(confs_path, template_path))
+        if Path(confs_path).exists():
+            logging.info('confs_path: {} exists, attempting to load'.format(confs_path))
             CONFS = yaml.load(open(confs_path))
 
-        except IOError:
-            logging.warn('Unable to open user conf file. Attempting to run with default values from conf template')
-
-            # Attempt to load conf from template path
-            template_path = confs_path + '.template'
+        elif Path(template_path).exists():
+            logging.warning('confs_path: {} does not exist, attempting to load template path: {}'.format(confs_path, template_path))
             CONFS = yaml.load(open(template_path))
+        else:
+            logging.error('Neither confs_path: {} or template_path: {} are available. Unable to run without confs'.format(confs_path, template_path))
+            raise ValueError('Configuration file not available at specified path')
 
     return CONFS
 
@@ -72,15 +74,6 @@ def get_batch_name():
         BATCH_NAME = '_'.join([batch_prefix, model_choice, datetime_str])
         logging.info('Batch name: {}'.format(BATCH_NAME))
     return BATCH_NAME
-
-
-def get_temp_dir():
-    global TEMP_DIR
-    if TEMP_DIR is None:
-        TEMP_DIR = tempfile.mkdtemp(prefix='python_starter_')
-        logging.info('Created temporary directory: {}'.format(TEMP_DIR))
-        print('Created temporary directory: {}'.format(TEMP_DIR))
-    return TEMP_DIR
 
 
 def get_batch_output_folder():
@@ -144,3 +137,10 @@ def archive_dataset_schemas(step_name, local_dict, global_dict):
 
     # Write to file
     agg_schema_df.to_csv(schema_output_path, index_label='variable')
+
+def normalize_column_name(input_string):
+    return_value = input_string.lower()
+    return_value = re.sub(r'\s+', '_', return_value)
+    return_value = re.sub(r'[^0-9a-zA-Z_]+', '', return_value)
+    return_value = return_value.strip('_')
+    return return_value

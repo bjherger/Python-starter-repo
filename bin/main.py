@@ -8,11 +8,13 @@ Code template courtesy https://github.com/bjherger/Python-starter-repo
 import pickle
 import logging
 import os
+import sys
 
 import pandas
 
-import lib
+sys.path.append(os.getcwd())
 
+from bin import lib
 
 def main():
     """
@@ -21,11 +23,13 @@ def main():
     :rtype: None
     """
     logging.basicConfig(level=logging.DEBUG)
+    print(f'Running batch: {lib.get_batch_name()}, with output folder: {lib.get_batch_output_folder()}')
+    logging.info(f'Running batch: {lib.get_batch_name()}, with output folder: {lib.get_batch_output_folder()}')
 
     observations = extract()
     observations = transform(observations)
-    observations, transformation_pipeline, trained_model = model(observations)
-    load(observations, transformation_pipeline, trained_model)
+    observations, trained_model = model(observations)
+    load(observations, trained_model)
     pass
 
 
@@ -51,33 +55,25 @@ def model(observations):
 
     mapper = None
 
-    transformation_pipeline = None
-
     trained_model = None
 
     lib.archive_dataset_schemas('model', locals(), globals())
     logging.info('End model')
-    return observations, transformation_pipeline, trained_model
+    return observations, trained_model
 
 
-def load(observations, transformation_pipeline, trained_model):
+def load(observations, trained_model):
     logging.info('Begin load')
+    logging.info(f'Loading batch: {lib.get_batch_name()}, with output folder: {lib.get_batch_output_folder()}')
+    print(f'Loading batch: {lib.get_batch_name()}, with output folder: {lib.get_batch_output_folder()}')
 
-    # Reference variables
-    lib.get_temp_dir()
-
-    observations_path = os.path.join(lib.get_temp_dir(), 'observations.csv')
+    observations_path = os.path.join(lib.get_batch_output_folder(), 'observations.csv')
     logging.info('Saving observations to path: {}'.format(observations_path))
     observations.to_csv(observations_path, index=False)
 
-    if transformation_pipeline is not None:
-        transformation_pipeline_path = os.path.join(lib.get_temp_dir(), 'transformation_pipeline.pkl')
-        logging.info('Saving transformation_pipeline to path: {}'.format(transformation_pipeline))
-        pickle.dump(transformation_pipeline, open(transformation_pipeline, 'w+'))
-
     if trained_model is not None:
-        trained_model_path = os.path.join(lib.get_temp_dir(), 'trained_model.pkl')
-        logging.info('Saving trained_model to path: {}'.format(transformation_pipeline))
+        trained_model_path = os.path.join(lib.get_batch_output_folder(), 'trained_model.pkl')
+        logging.info('Saving trained_model to path: {}'.format(trained_model_path))
         pickle.dump(trained_model, open(trained_model_path, 'w+'))
 
     lib.archive_dataset_schemas('load', locals(), globals())

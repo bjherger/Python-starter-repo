@@ -1,4 +1,4 @@
 batch_prefix: b
 model_choice: m
-data_schema_dir: ../data/schemas
-output_path: ../data/output
+data_schema_dir: data/schemas
+output_path: data/output
